@@ -5,6 +5,7 @@ import Topbar from "@/components/Topbar";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "@/context/AuthContext"; 
+import StoreProvider from "@/store/StoreProvider";
 
 const outfit = Outfit({ subsets: ['latin'] });
 
@@ -31,13 +32,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body className={`${outfit.className} min-h-screen flex flex-col antialiased`}>
-        {/* 2. WRAP YOUR CONTENT IN THE PROVIDER */}
-        <AuthProvider>
-          <Topbar />
-          <Navbar />
-          <main className="flex-grow">{children}</main>
-          <Footer />
-        </AuthProvider>
+        <StoreProvider>
+          <AuthProvider>
+            <Topbar />
+            <Navbar />
+            <main className="flex-grow">{children}</main>
+            <Footer />
+          </AuthProvider>
+        </StoreProvider>
       </body>
     </html>
   );

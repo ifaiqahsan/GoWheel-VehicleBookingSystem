@@ -1,21 +1,58 @@
 "use client";
 
-import { createContext, useContext, useState } from 'react';
-import AuthModel from '@/components/AuthModel';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
-const AuthContext = createContext({
-  setAuthOpen: (open: boolean) => {},
-});
+type UserProfile = {
+  name: string;
+  email: string;
+};
+
+type AuthContextType = {
+  isAuthOpen: boolean;
+  setAuthOpen: (open: boolean) => void;
+  user: UserProfile | null;
+  setUser: (user: UserProfile | null) => void;
+  logout: () => void;
+  isLoading: boolean;
+};
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [authOpen, setAuthOpen] = useState(false);
+  const [isAuthOpen, setAuthOpen] = useState(false);
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("gowheel_user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+    setIsLoading(false);
+  }, []);
+
+  const handleSetUser = (newUser: UserProfile | null) => {
+    setUser(newUser);
+    if (newUser) {
+      localStorage.setItem("gowheel_user", JSON.stringify(newUser));
+    } else {
+      localStorage.removeItem("gowheel_user");
+    }
+  };
+
+  const logout = () => {
+    handleSetUser(null);
+  };
 
   return (
-    <AuthContext.Provider value={{ setAuthOpen }}>
+    <AuthContext.Provider value={{ isAuthOpen, setAuthOpen, user, setUser: handleSetUser, logout, isLoading }}>
       {children}
-      <AuthModel isOpen={authOpen} onClose={() => setAuthOpen(false)} />
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) throw new Error("useAuth must be used within an AuthProvider");
+  return context;
+};
