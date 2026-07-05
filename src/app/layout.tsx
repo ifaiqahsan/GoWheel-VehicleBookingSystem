@@ -1,43 +1,27 @@
 import type { Metadata } from "next";
 import { Outfit, Geist, Geist_Mono } from 'next/font/google';
 import "./globals.css";
-import Topbar from "@/components/Topbar";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { AuthProvider } from "@/context/AuthContext"; 
+import Topbar from "@/components/common/Topbar";
+import Navbar from "@/components/common/Navbar";
+import Footer from "@/components/common/Footer";
+import { AuthProvider } from "@/core/context/AuthContext"; 
 import StoreProvider from "@/store/StoreProvider";
+import GlobalAuthManager from "../components/auth/GlobalAuthManager";
 
 const outfit = Outfit({ subsets: ['latin'] });
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export const metadata: Metadata = {
-  title: "GoWheel - Smart Vehicle Booking Platform",
-  description: "A small Vehicle Booking Platform built with Next.js, Tailwind CSS, and TypeScript.",
-};
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="en">
       <body className={`${outfit.className} min-h-screen flex flex-col antialiased`}>
         <StoreProvider>
           <AuthProvider>
-            <Topbar />
-            <Navbar />
-            <main className="flex-grow">{children}</main>
-            <Footer />
+            <GlobalAuthManager>
+              <Topbar />
+              <Navbar />
+              <main className="flex-grow">{children}</main>
+              <Footer />
+            </GlobalAuthManager>
           </AuthProvider>
         </StoreProvider>
       </body>
