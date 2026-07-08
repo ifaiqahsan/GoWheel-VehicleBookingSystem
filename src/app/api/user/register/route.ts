@@ -12,34 +12,39 @@ const transporter = nodemailer.createTransport({
 export async function POST(req: Request) {
   try {
     await connectDB();
-    const { name, email, password, role } = await req.json();
+    const body = await req.json();
+    console.log("Registration attempt for:", body.email); // Debug point 1
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: body.email });
     if (existingUser) {
+      console.log("Registration failed: User already exists"); // Debug point 2
       return NextResponse.json({ message: "User already exists." }, { status: 400 });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(body.password, 10);
     const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
+    console.log("Attempting to save user to DB"); // Debug point 3
     await User.create({
-      name,
-      email,
+      name: body.name,
+      email: body.email,
       password: hashedPassword,
-      role: role || "customer",
+      role: body.role || "customer",
       isVerified: false,
       verificationCode,
     });
 
+    console.log("Attempting to send email"); // Debug point 4
     await transporter.sendMail({
       from: `"GoWheel" <${process.env.EMAIL_USER}>`,
-      to: email,
+      to: body.email,
       subject: "Verification Code",
       text: `Your verification code is: ${verificationCode}`,
     });
 
     return NextResponse.json({ message: "Verification code sent!" }, { status: 201 });
   } catch (error) {
+    console.error("Registration error details:", error); // Critical: Shows why it catches
     return NextResponse.json({ message: "Internal server error." }, { status: 500 });
   }
 }

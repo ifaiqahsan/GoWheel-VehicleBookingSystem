@@ -41,7 +41,7 @@ function AuthModel({ isOpen, onClose }: AuthModelProps) {
 
     try {
       if (isLogin) {
-        const response = await fetch('/api/auth/login', { 
+        const response = await fetch('/api/user/login', { 
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -53,7 +53,6 @@ function AuthModel({ isOpen, onClose }: AuthModelProps) {
         const data = await response.json();
         if (!response.ok) {
           setError(data.message || "Invalid credentials.");
-          setIsLoading(false);
           return;
         }
 
@@ -63,11 +62,10 @@ function AuthModel({ isOpen, onClose }: AuthModelProps) {
         const validationError = validateForm();
         if (validationError) { 
           setError(validationError); 
-          setIsLoading(false);
           return; 
         }
 
-        const response = await fetch('/api/auth/register', {
+        const response = await fetch('/api/user/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -81,12 +79,11 @@ function AuthModel({ isOpen, onClose }: AuthModelProps) {
         const data = await response.json();
         if (!response.ok) {
           setError(data.message || "Something went wrong.");
-          setIsLoading(false);
           return;
         }
         setIsVerifying(true);
       } else {
-        const response = await fetch('/api/auth/verify', {
+        const response = await fetch('/api/user/verify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: formData.email, code: verificationCode })
@@ -95,7 +92,6 @@ function AuthModel({ isOpen, onClose }: AuthModelProps) {
         const data = await response.json();
         if (!response.ok) {
           setError(data.message || "Invalid verification code.");
-          setIsLoading(false);
           return;
         }
         setIsVerifying(false);

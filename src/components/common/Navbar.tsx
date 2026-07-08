@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from 'react';
-import { Search, User, LogOut, Settings, LayoutDashboard } from 'lucide-react';
+import { User, LogOut, Settings, Bell, Car, LayoutDashboard, PlusCircle, ClipboardList } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/core/context/AuthContext';
@@ -25,63 +25,78 @@ const Navbar = () => {
   const getNavLinks = () => {
     if (isLoading) return [];
     if (!user) return [
-      { name: 'Home', path: '/' }, 
-      { name: 'Vehicles', path: '/vehicles' }, 
-      { name: 'About Us', path: '/about' }
+      { name: 'Home', path: '/' },
+      { name: 'Marketplace', path: '/customer/marketplace' }
     ];
     if (user.role === 'seller') return [
-      { name: 'Dashboard', path: '/seller/dashboard' }, 
-      { name: 'My Listings', path: '/seller/listings' }
+      { name: 'Dashboard', path: '/' },
+      { name: 'My Listings', path: '/seller/listings' },
+      { name: 'Sell Vehicle', path: '/seller/listings/create' }
     ];
-    
     return [
       { name: 'Home', path: '/' },
       { name: 'Marketplace', path: '/customer/marketplace' },
-      { name: 'Bookings', path: '/customer/bookings' }
+      { name: 'My Bookings', path: '/customer/bookings' }
     ];
   };
 
   const navLinks = getNavLinks();
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md py-6 shadow-sm border-b border-gray-100">
-      <div className="container mx-auto flex justify-between items-center px-2">
-        <Link href="/" className="text-3xl font-extrabold tracking-tighter text-gray-900 w-56">
+    <nav className="sticky top-0 z-50 bg-white py-4 shadow-sm border-b border-gray-100">
+      <div className="container mx-auto grid grid-cols-[1fr_auto_1fr] items-center px-4">
+        <Link href="/" className="text-3xl font-extrabold tracking-tighter text-gray-900">
           Go<span className="text-yellow-500">Wheel</span>
         </Link>
-        <ul className="flex-grow flex justify-center gap-10 font-semibold text-gray-700 text-xl">
+
+        <ul className="flex justify-center gap-8 font-semibold text-gray-700">
           {navLinks.map((link) => {
             const isActive = pathname === link.path;
             return (
               <li key={link.path}>
-                <Link href={link.path} className={`transition-colors duration-200 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'}`}>
+                <Link
+                  href={link.path}
+                  className={`relative py-2 transition-all duration-300 ${isActive ? 'text-yellow-500' : 'hover:text-yellow-500'}`}
+                >
                   {link.name}
+                  <span className={`absolute bottom-0 left-0 h-0.5 bg-yellow-500 transition-all duration-300 ${isActive ? 'w-full' : 'w-0 hover:w-full'}`} />
                 </Link>
               </li>
             );
           })}
         </ul>
-        <div className="w-66 flex items-center justify-end gap-3">
-          <div className="relative flex items-center bg-white rounded-full px-4 py-2.5 border border-gray-200 shadow-inner focus-within:border-yellow-500 focus-within:ring-1 focus-within:ring-yellow-500 transition-all w-full">
-            <Search size={20} className="text-gray-400" />
-            <input type="text" placeholder="Search..." className="bg-transparent border-none outline-none text-base w-full ml-3 text-gray-700 placeholder:text-gray-400" />
-          </div>
-          <div className="min-h-[48px] flex items-center shrink-0 relative" ref={dropdownRef}>
-            {isLoading ? <div className="w-24" /> : user ? (
+
+        <div className="flex justify-end items-center">
+          <div className="relative" ref={dropdownRef}>
+            {isLoading ? (
+              <div className="w-10 h-10 animate-pulse bg-gray-200 rounded-full" />
+            ) : user ? (
               <>
-                <button onClick={() => setIsOpen(!isOpen)} className="w-10 h-10 rounded-full bg-yellow-500 text-black flex items-center justify-center font-black text-base hover:opacity-90 transition-opacity">
+                <button
+                  onClick={() => setIsOpen(!isOpen)}
+                  className="w-10 h-10 rounded-full bg-yellow-500 text-black flex items-center justify-center font-black text-base shadow-md transition-all hover:shadow-lg"
+                >
                   {user.name.charAt(0).toUpperCase()}
                 </button>
                 {isOpen && (
-                  <div className="absolute top-14 right-0 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50">
-                    <Link href="/customer/profile" className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 text-gray-700"><User size={18} /> My Profile</Link>
-                    <Link href="/customer/settings" className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 text-gray-700"><Settings size={18} /> Settings</Link>
-                    <button onClick={logout} className="flex w-full items-center gap-3 px-4 py-2.5 hover:bg-gray-50 text-yellow-500"><LogOut size={18} /> Sign Out</button>
+                  <div className="absolute top-14 right-0 w-48 bg-white rounded-xl shadow-2xl border border-gray-100 py-2 z-50">
+                    <Link href="/profile" className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 text-gray-700 transition-colors">
+                      <User size={16} /> My Profile
+                    </Link>
+                    <Link href="/settings" className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 text-gray-700 transition-colors">
+                      <Settings size={16} /> Settings
+                    </Link>
+                    <button onClick={logout} className="flex w-full items-center gap-3 px-4 py-2.5 hover:bg-gray-50 text-yellow-500 font-bold transition-colors">
+                      <LogOut size={16} /> Sign Out
+                    </button>
                   </div>
                 )}
               </>
             ) : (
-              <button onClick={() => setAuthOpen(true)} className="bg-yellow-500 text-white px-7 py-2.5 rounded-full font-semibold hover:bg-yellow-600 text-base whitespace-nowrap shadow-md">
+              <button
+                onClick={() => setAuthOpen(true)}
+                className="bg-yellow-500 text-black px-6 py-2 rounded-full font-bold hover:bg-yellow-600 transition-all shadow-sm"
+              >
                 Sign In
               </button>
             )}

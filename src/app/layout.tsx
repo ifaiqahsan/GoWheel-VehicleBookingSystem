@@ -5,7 +5,7 @@ import Topbar from "@/components/common/Topbar";
 import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
 import { AuthProvider } from "@/core/context/AuthContext"; 
-import StoreProvider from "@/store/StoreProvider";
+import StoreProvider from "@/core/store/StoreProvider";
 import GlobalAuthManager from "../components/auth/GlobalAuthManager";
 
 const outfit = Outfit({ subsets: ['latin'] });

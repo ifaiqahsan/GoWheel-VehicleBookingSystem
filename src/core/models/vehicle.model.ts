@@ -8,36 +8,27 @@ interface IVehicle extends mongoose.Document {
     vehicleModel: string;
     number: string;
     imageUrl?: string;
-    baseFare?: number;
-    pricePerKM?: number;
-    waitingCharge?: number;
+    gallery?: string[]; // Added for gallery support
+    description?: string; // Added for detailed view
+    specs?: Record<string, string>; // Added for dynamic spec grid
+    features?: string[]; // Added for checkmark features
+    price: number; // Changed from baseFare to generic price
     status: "approved" | "pending" | "rejected";
-    rejectionReason?: string;
     isActive: boolean;
-    createdAt: Date;
-    updatedAt: Date;
 }
 
 const vehicleSchema = new mongoose.Schema<IVehicle>({
     owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    type: { 
-        type: String, 
-        required: true, 
-        enum: ["all", "bikes", "cars", "suvs", "vans", "prestige"],
-        lowercase: true
-    },
+    type: { type: String, required: true, enum: ["all", "bikes", "cars", "suvs", "vans", "prestige"], lowercase: true },
     vehicleModel: { type: String, required: true },
     number: { type: String, required: true, unique: true },
     imageUrl: { type: String },
-    baseFare: { type: Number },
-    pricePerKM: { type: Number },
-    waitingCharge: { type: Number },
-    status: { 
-        type: String, 
-        default: "pending", 
-        enum: ["approved", "pending", "rejected"] 
-    },
-    rejectionReason: { type: String },
+    gallery: { type: [String], default: [] },
+    description: { type: String },
+    specs: { type: Map, of: String }, // Flexible structure for dynamic data
+    features: { type: [String], default: [] },
+    price: { type: Number, required: true }, // Unified price field
+    status: { type: String, default: "pending", enum: ["approved", "pending", "rejected"] },
     isActive: { type: Boolean, default: false }
 }, { timestamps: true });
 
