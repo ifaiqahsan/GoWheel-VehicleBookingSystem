@@ -1,41 +1,100 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-export type VehicleType = "all" | "bikes" | "cars" | "suvs" | "vans" | "prestige";
-
-export interface IVehicleData {
-  _id: string;
-  owner: string;
-  type: VehicleType;
-  vehicleModel: string;
-  number: string;
-  imageUrl?: string;
-  baseFare?: number;
-  pricePerKM?: number;
-  waitingCharge?: number;
-  status: "approved" | "pending" | "rejected";
-  rejectionReason?: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
+import { VehicleFormValues } from "@/lib/validation";
 
 interface VehicleState {
-  items: IVehicleData[];
+  items: VehicleFormValues[];
   loading: boolean;
   error: string | null;
+  draft: VehicleFormValues;
 }
 
 const initialState: VehicleState = {
   items: [],
   loading: false,
   error: null,
+  draft: {
+    listingIntent: "FOR_SALE",
+    category: "",
+    subcategory: "",
+    vehicleCompany: "",
+    vehicleName: "",
+    modelYear: "",
+    vehicleNumber: "",
+    mileage: "",
+    fuelAverage: "",
+    engineSize: "",
+    horsepower: "",
+    registrationCity: "",
+    color: "",
+    seats: "",
+    doors: "",
+    fuelType: "",
+    condition: "",
+    transmission: "",
+    driveType: "",
+    assembly: "",
+    features: {
+      airConditioner: false,
+      leatherSeats: false,
+      powerWindows: false,
+      pushStart: false,
+      digitalOdometer: false,
+      steeringAdjustment: false,
+      ambientLighting: false,
+      airbags: false,
+      antiLockBraking: false,
+      immobilizer: false,
+      parkingSensors: false,
+      stabilityControl: false,
+      tractionControl: false,
+      centralLocking: false,
+      androidAuto: false,
+      appleCarPlay: false,
+      bluetooth: false,
+      climateControl: false,
+      cruiseControl: false,
+      keylessEntry: false,
+      powerSteering: false,
+    },
+    sellingPrice: "",
+    isPriceNegotiable: false,
+    vehicleDescription: "",
+    media: {
+      frontView: "",
+      backView: "",
+      leftSide: "",
+      rightSide: "",
+      interior: "",
+      dashboard: "",
+      engineBay: "",
+      exteriorDetail: "",
+    },
+    legal: {
+      cnicFront: "",
+      cnicBack: "",
+      registrationBook: "",
+      verificationCertificate: "",
+      transferDeed: undefined,
+      insurancePapers: undefined,
+    },
+    sellerName: "",
+    sellerPhone: "",
+    sellerEmail: "",
+    sellerLoc: "",
+    socialHandle: "",
+    availability: "",
+    preferredContact: "WhatsApp",
+    driverName: "",
+    driverPhone: "",
+    driverLicense: "",
+  },
 };
 
 const vehicleSlice = createSlice({
   name: "vehicles",
   initialState,
   reducers: {
-    setVehicles: (state, action: PayloadAction<IVehicleData[]>) => {
+    setVehicles: (state, action: PayloadAction<VehicleFormValues[]>) => {
       state.items = action.payload;
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
@@ -44,8 +103,20 @@ const vehicleSlice = createSlice({
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
+    updateDraft: (state, action: PayloadAction<Partial<VehicleFormValues>>) => {
+      state.draft = {
+        ...state.draft,
+        ...action.payload,
+        features: { ...state.draft.features, ...action.payload.features },
+        media: { ...state.draft.media, ...action.payload.media },
+        legal: { ...state.draft.legal, ...action.payload.legal },
+      };
+    },
+    clearDraft: (state) => {
+      state.draft = initialState.draft;
+    },
   },
 });
 
-export const { setVehicles, setLoading, setError } = vehicleSlice.actions;
+export const { setVehicles, setLoading, setError, updateDraft, clearDraft } = vehicleSlice.actions;
 export default vehicleSlice.reducer;

@@ -51,7 +51,7 @@ export default function MarketplaceFilter() {
         ]} 
         onSelect={(v) => handleUpdate({ category: v })} 
       />
-      <CustomDropdown  // faiq ahsan 
+      <CustomDropdown
         label="PRICE" 
         options={[
           { label: 'UNDER 5M', value: 'LOW' },

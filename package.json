@@ -9,8 +9,11 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.4.0",
     "@reduxjs/toolkit": "^2.12.0",
+    "@uploadthing/react": "^7.3.3",
     "bcryptjs": "^3.0.3",
+    "framer-motion": "^12.42.2",
     "lucide-react": "^1.23.0",
     "mongoose": "^8.24.1",
     "next": "^15.5.20",
@@ -18,7 +21,10 @@
     "nodemailer": "^7.0.13",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "react-redux": "^9.3.0"
+    "react-hook-form": "^7.81.0",
+    "react-redux": "^9.3.0",
+    "sonner": "^2.0.7",
+    "uploadthing": "^7.7.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

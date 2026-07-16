@@ -1,36 +1,81 @@
 import mongoose from 'mongoose';
 
-export type VehicleType = "all" | "bikes" | "cars" | "suvs" | "vans" | "prestige";
-
-interface IVehicle extends mongoose.Document {
-    owner: mongoose.Types.ObjectId;
-    type: VehicleType;
-    vehicleModel: string;
-    number: string;
-    imageUrl?: string;
-    gallery?: string[]; // Added for gallery support
-    description?: string; // Added for detailed view
-    specs?: Record<string, string>; // Added for dynamic spec grid
-    features?: string[]; // Added for checkmark features
-    price: number; // Changed from baseFare to generic price
-    status: "approved" | "pending" | "rejected";
-    isActive: boolean;
-}
-
-const vehicleSchema = new mongoose.Schema<IVehicle>({
+const vehicleSchema = new mongoose.Schema({
     owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    type: { type: String, required: true, enum: ["all", "bikes", "cars", "suvs", "vans", "prestige"], lowercase: true },
-    vehicleModel: { type: String, required: true },
-    number: { type: String, required: true, unique: true },
-    imageUrl: { type: String },
-    gallery: { type: [String], default: [] },
-    description: { type: String },
-    specs: { type: Map, of: String }, // Flexible structure for dynamic data
-    features: { type: [String], default: [] },
-    price: { type: Number, required: true }, // Unified price field
+    listingIntent: { type: String, required: true },
+    category: String,
+    subcategory: String,
+    vehicleCompany: String,
+    vehicleName: String,
+    modelYear: String,
+    vehicleNumber: { type: String, required: true },
+    mileage: String,
+    fuelAverage: String,
+    engineSize: String,
+    horsepower: String,
+    registrationCity: String,
+    color: String,
+    seats: String,
+    doors: String,
+    fuelType: String,
+    condition: String,
+    transmission: String,
+    driveType: String,
+    assembly: String,
+    features: {
+        airConditioner: Boolean,
+        leatherSeats: Boolean,
+        powerWindows: Boolean,
+        pushStart: Boolean,
+        digitalOdometer: Boolean,
+        steeringAdjustment: Boolean,
+        ambientLighting: Boolean,
+        airbags: Boolean,
+        antiLockBraking: Boolean,
+        immobilizer: Boolean,
+        parkingSensors: Boolean,
+        stabilityControl: Boolean,
+        tractionControl: Boolean,
+        centralLocking: Boolean,
+        androidAuto: Boolean,
+        appleCarPlay: Boolean,
+        bluetooth: Boolean,
+        climateControl: Boolean,
+        cruiseControl: Boolean,
+        keylessEntry: Boolean,
+        powerSteering: Boolean,
+    },
+    sellingPrice: String,
+    isPriceNegotiable: Boolean,
+    vehicleDescription: String,
+    media: {
+        frontView: String,
+        backView: String,
+        leftSide: String,
+        rightSide: String,
+        interior: String,
+        dashboard: String,
+        engineBay: String,
+        exteriorDetail: String,
+    },
+    legal: {
+        cnicFront: String,
+        cnicBack: String,
+        registrationBook: String,
+        verificationCertificate: String,
+        transferDeed: String,
+        insurancePapers: String,
+    },
+    sellerName: String,
+    sellerPhone: String,
+    sellerEmail: String,
+    sellerLoc: String,
+    socialHandle: String,
+    availability: String,
+    preferredContact: String,
     status: { type: String, default: "pending", enum: ["approved", "pending", "rejected"] },
     isActive: { type: Boolean, default: false }
 }, { timestamps: true });
 
-const Vehicle = mongoose.models.Vehicle || mongoose.model<IVehicle>("Vehicle", vehicleSchema);
+const Vehicle = mongoose.models.Vehicle || mongoose.model("Vehicle", vehicleSchema);
 export default Vehicle;

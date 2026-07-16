@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from 'react';
-import { User, LogOut, Settings, Bell, Car, LayoutDashboard, PlusCircle, ClipboardList } from 'lucide-react';
+import { User, LogOut, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/core/context/AuthContext';
@@ -29,9 +29,10 @@ const Navbar = () => {
       { name: 'Marketplace', path: '/customer/marketplace' }
     ];
     if (user.role === 'seller') return [
-      { name: 'Dashboard', path: '/' },
-      { name: 'My Listings', path: '/seller/listings' },
-      { name: 'Sell Vehicle', path: '/seller/listings/create' }
+      { name: 'Home', path: '/' },
+      { name: 'Inventory', path: '/seller/inventory' },
+      { name: 'List', path: '/seller/list' },
+      { name: 'Inquiry', path: '/seller/inquiry' }
     ];
     return [
       { name: 'Home', path: '/' },

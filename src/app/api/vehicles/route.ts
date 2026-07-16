@@ -29,9 +29,29 @@ export async function POST(req: NextRequest) {
     await connectDB();
     const body = await req.json();
 
-    const newVehicle = await Vehicle.create(body);
-    return NextResponse.json(newVehicle, { status: 201 });
+    const { _id, ownerId, ...formData } = body;
+
+    if (_id) {
+        const updatedVehicle = await Vehicle.findByIdAndUpdate(
+            _id,
+            { $set: formData },
+            { new: true, runValidators: false }
+        );
+        return NextResponse.json(updatedVehicle, { status: 200 });
+    } else {
+        const newVehicle = await Vehicle.create({
+            ...formData,
+            owner: ownerId
+        });
+        return NextResponse.json(newVehicle, { status: 201 });
+    }
   } catch (error: any) {
+    if (error.code === 11000) {
+            return NextResponse.json(
+                { error: "A vehicle with this number already exists in our system." }, 
+                { status: 409 }
+            );
+        }
     return NextResponse.json(
       { error: "Failed to register vehicle", details: error.message },
       { status: 400 }

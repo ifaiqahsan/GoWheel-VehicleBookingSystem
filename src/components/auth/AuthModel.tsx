@@ -56,7 +56,7 @@ function AuthModel({ isOpen, onClose }: AuthModelProps) {
           return;
         }
 
-        setUser({ name: data.user.name, email: data.user.email, role: data.user.role });
+        setUser({ id: data.user.id, name: data.user.name, email: data.user.email, role: data.user.role });
         setAuthOpen(false);
       } else if (!isVerifying) {
         const validationError = validateForm();
